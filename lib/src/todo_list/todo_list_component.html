@@ -1,0 +1,24 @@
+<!-- Components info: https://webdev.dartlang.org/components -->
+<div>
+  <material-input label="What do you need to do?"
+                  autoFocus floatingLabel style="width:80%"
+                  [(ngModel)]="newTodo"
+                  (keyup.enter)="add()">
+  </material-input>
+
+  <material-fab mini raised
+                (trigger)="add()"
+                [disabled]="newTodo.isEmpty">
+    <material-icon icon="add"></material-icon>
+  </material-fab>
+</div>
+
+<p *ngIf="items.isEmpty">
+  Nothing to do! Add items above.
+</p>
+
+<div *ngIf="items.isNotEmpty">
+  <ul>
+      <todo *ngFor="let item of items; let i=index" [store]="item"></todo>
+  </ul>
+</div>
