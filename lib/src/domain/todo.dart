@@ -16,25 +16,13 @@ class Todo {
 }
 
 class TodosStore {
-  Iterable<LensCase<Todo>> _childLenses = [];
   final LensCase<IterableMonad<Todo>> lens =
       new LensCase.of(new IterableMonad<Todo>());
 
-  TodosStore() {
-    lens.stream.listen((_) {
-      lens
-          .getSightSequence(identity, (pieces, whole) => pieces)
-          .first
-          .then((lenses) {
-        _childLenses = lenses;
-      });
-    });
-  }
-
-  Iterable<LensCase<Todo>> get childLenses => _childLenses;
+  TodosStore();
 
   void addTodo(String description) {
-    print('addTodo($description})');
+    print('addTodo($description)');
     lens.evolve((todos) {
       final newTodos = todos.toList()..add(new Todo(description));
       print('evolving $newTodos');
@@ -42,10 +30,23 @@ class TodosStore {
     });
   }
 
-  void removeTodo(Todo todo) {
-    lens.evolve((todos) =>
-        new IterableMonad.fromIterable(todos.where((t) => t != todo)));
+  void removeTodo(int index) {
+    lens.evolve((todos) {
+      final list = todos.toList()..removeAt(index);
+      return new IterableMonad.fromIterable(list);
+    });
   }
+
+  void toggle(int index) {
+    lensAt(index).evolve((todo) => todo.copy(done: !todo.done));
+  }
+
+  LensCase<Todo> lensAt(int index) =>
+      lens.getSight((todos) => todos.elementAt(index), (newTodo, todos) {
+        final list = todos.toList();
+        list[index] = newTodo;
+        return new IterableMonad.fromIterable(list);
+      });
 }
 
 class TodoStore {
@@ -57,7 +58,7 @@ class TodoStore {
     lens.evolve((todo) => todo.copy(description: description));
   }
 
-  void deleteTodo() {
+  void delete() {
     print('TodoStore.deleteTodo');
     changeDescription('');
   }

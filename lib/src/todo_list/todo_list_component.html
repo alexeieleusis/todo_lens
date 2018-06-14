@@ -2,23 +2,26 @@
 <div>
   <material-input label="What do you need to do?"
                   autoFocus floatingLabel style="width:80%"
-                  [(ngModel)]="newTodo"
-                  (keyup.enter)="add()">
+                  #description
+                  [ngModel]="newTodo"
+                  (keyup.enter)="add(description.inputText)">
   </material-input>
 
   <material-fab mini raised
-                (trigger)="add()"
-                [disabled]="newTodo.isEmpty">
+                (trigger)="add(description.inputText)"
+                [disabled]="description.inputText.isEmpty">
     <material-icon icon="add"></material-icon>
   </material-fab>
 </div>
 
-<p *ngIf="items.isEmpty">
+<p *ngIf="stores.isEmpty">
   Nothing to do! Add items above.
 </p>
 
-<div *ngIf="items.isNotEmpty">
+<div *ngIf="stores.isNotEmpty">
   <ul>
-      <todo *ngFor="let item of items; let i=index" [store]="item"></todo>
+      <todo *ngFor="let store of stores; let i=index"
+            [store]="store">
+      </todo>
   </ul>
 </div>

@@ -1,8 +1,8 @@
 <li>
     <material-checkbox materialTooltip="Mark item as done"
-                       [checked]="todo.done" (change)="toggle()">
+                       [checked]="todo.done" (click)="toggle()">
     </material-checkbox>
-    <span [class.done]="todo.done">{{todo.description}}</span>
+    <span [class.done]="todo.done">{{tag}} {{todo.description}}</span>
     <material-fab mini (trigger)="remove()">
         <material-icon icon="delete"></material-icon>
     </material-fab>

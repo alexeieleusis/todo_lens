@@ -9,46 +9,59 @@ import 'package:angular_components/material_input/material_input.dart';
 import 'package:todo_lens/src/domain/todo.dart';
 
 @Component(
-  selector: 'todo',
-  styleUrls: ['todo_component.css'],
-  templateUrl: 'todo_component.html',
-  directives: [
-    MaterialCheckboxComponent,
-    MaterialFabComponent,
-    MaterialIconComponent,
-    materialInputDirectives,
-    NgFor,
-    NgIf,
-  ],
-  changeDetection: ChangeDetectionStrategy.Stateful
-)
-class TodoComponent extends ComponentState {
-  TodoStore _store;
+    selector: 'todo',
+    styleUrls: ['todo_component.css'],
+    templateUrl: 'todo_component.html',
+    directives: [
+      MaterialCheckboxComponent,
+      MaterialFabComponent,
+      MaterialIconComponent,
+      materialInputDirectives,
+      NgFor,
+      NgIf,
+    ])
+class TodoComponent extends ComponentState implements OnDestroy {
+  static int _counter = 0;
+  final int tag;
+  Todo _todo = const Todo('');
   StreamSubscription<Todo> _subscription;
-  Todo todo = const Todo('');
+  TodoStore _store;
+
+  TodoComponent() : tag = _counter {
+    _counter++;
+  }
+
+  TodoStore get store => _store;
 
   @Input()
-  // ignore: avoid_setters_without_getters
   set store(TodoStore value) {
-    print('setting store on todo component ${value.hashCode}');
-    _store = value;
+    print('TodoComponent.store.set $tag ${value.hashCode}');
     _subscription?.cancel();
+    _todo = new Todo('${value.hashCode}');
+    _store = value;
     _subscription = _store.lens.stream.listen((t) {
-      print('todo store emitted ${t.description}');
+      print('_store.lens.stream.listen description ${t.description} $tag');
       setState(() {
-        todo = t;
-        print('todo updates ${todo.description}');
+        print('setState $tag ${t.description}');
+        _todo = t;
       });
     });
   }
 
+  Todo get todo => _todo;
+
+  @override
+  void ngOnDestroy() {
+    print('ngOnDestroy $tag');
+    _subscription?.cancel();
+  }
+
   void remove() {
-    print('TodoComponent.remove ${todo.description}');
-    _store.deleteTodo();
+    _store.delete();
   }
 
   void toggle() {
-    print('TodoComponent.toggle ${todo.description}');
+    print('toggle');
     _store.toggle();
   }
 }

@@ -10,6 +10,7 @@ import 'src/todo_list/todo_list_component.dart';
   styleUrls: ['app_component.css'],
   templateUrl: 'app_component.html',
   directives: [TodoListComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 )
 class AppComponent {
   // Nothing here yet. All logic is in TodoListComponent.
