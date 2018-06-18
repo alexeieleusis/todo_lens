@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:shuttlecock/shuttlecock.dart';
+import 'package:todo_lens/src/domain/lens_case.dart';
 
 @immutable
 class Todo {
@@ -16,8 +16,8 @@ class Todo {
 }
 
 class TodosStore {
-  final LensCase<IterableMonad<Todo>> lens =
-      new LensCase.of(new IterableMonad<Todo>());
+  final LensCase<Iterable<Todo>> lens =
+      new LensCase.of(<Todo>[]);
 
   TodosStore();
 
@@ -26,14 +26,14 @@ class TodosStore {
     lens.evolve((todos) {
       final newTodos = todos.toList()..add(new Todo(description));
       print('evolving $newTodos');
-      return new IterableMonad.fromIterable(newTodos);
+      return newTodos;
     });
   }
 
   void removeTodo(int index) {
     lens.evolve((todos) {
       final list = todos.toList()..removeAt(index);
-      return new IterableMonad.fromIterable(list);
+      return list;
     });
   }
 
@@ -45,7 +45,7 @@ class TodosStore {
       lens.getSight((todos) => todos.elementAt(index), (newTodo, todos) {
         final list = todos.toList();
         list[index] = newTodo;
-        return new IterableMonad.fromIterable(list);
+        return list;
       });
 }
 
