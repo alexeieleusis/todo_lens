@@ -20,7 +20,7 @@ import 'package:todo_lens/src/todo_list/todo_component.dart';
       NgIf,
       TodoComponent
     ],
-    providers: [])
+    changeDetection: ChangeDetectionStrategy.Stateful)
 class TodoListComponent extends ComponentState {
   final TodosStore _store = new TodosStore();
   String newTodo = '';
@@ -28,17 +28,29 @@ class TodoListComponent extends ComponentState {
 
   TodoListComponent() {
     _store.lens.stream.listen((todos) {
-      print('universe updated');
       setState(() {
-        print('setState universe');
-        _stores
-          ..clear()
-          ..addAll(todos
-              .toList()
-              .asMap()
-              .keys
-              .map(_store.lensAt)
-              .map((lens) => new TodoStore(lens)));
+        final indices = new Iterable.generate(todos.length)
+            .where((index) => todos.elementAt(index).description != '');
+        if (indices.length < todos.length) {
+          _store.lens
+              .update(indices.map((index) => todos.elementAt(index)).toList());
+          return;
+        }
+
+        while (todos.length < _stores.length) {
+          _stores.removeLast();
+          return;
+        }
+
+        _stores.addAll(todos
+            .skip(_stores.length)
+            .toList()
+            .asMap()
+            .keys
+            .map((index) => _stores.length + index)
+            .toList()
+            .map(_store.lensAt)
+            .map((lens) => new TodoStore(lens)));
       });
     });
   }

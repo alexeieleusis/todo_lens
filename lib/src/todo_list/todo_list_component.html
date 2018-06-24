@@ -3,7 +3,7 @@
   <material-input label="What do you need to do?"
                   autoFocus floatingLabel style="width:80%"
                   #description
-                  [ngModel]="newTodo"
+                  [(ngModel)]="newTodo"
                   (keyup.enter)="add(description.inputText)">
   </material-input>
 

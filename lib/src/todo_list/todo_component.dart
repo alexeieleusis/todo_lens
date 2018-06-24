@@ -35,14 +35,15 @@ class TodoComponent extends ComponentState implements OnDestroy {
 
   @Input()
   set store(TodoStore value) {
-    print('TodoComponent.store.set $tag ${value.hashCode}');
+    if(store == value) {
+      return;
+    }
+
     _subscription?.cancel();
     _todo = new Todo('${value.hashCode}');
     _store = value;
     _subscription = _store.lens.stream.listen((t) {
-      print('_store.lens.stream.listen description ${t.description} $tag');
       setState(() {
-        print('setState $tag ${t.description}');
         _todo = t;
       });
     });
@@ -52,7 +53,6 @@ class TodoComponent extends ComponentState implements OnDestroy {
 
   @override
   void ngOnDestroy() {
-    print('ngOnDestroy $tag');
     _subscription?.cancel();
   }
 
@@ -61,7 +61,6 @@ class TodoComponent extends ComponentState implements OnDestroy {
   }
 
   void toggle() {
-    print('toggle');
     _store.toggle();
   }
 }

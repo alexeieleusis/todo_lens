@@ -16,16 +16,13 @@ class Todo {
 }
 
 class TodosStore {
-  final LensCase<Iterable<Todo>> lens =
-      new LensCase.of(<Todo>[]);
+  final LensCase<Iterable<Todo>> lens = new LensCase.of(<Todo>[]);
 
   TodosStore();
 
   void addTodo(String description) {
-    print('addTodo($description)');
     lens.evolve((todos) {
       final newTodos = todos.toList()..add(new Todo(description));
-      print('evolving $newTodos');
       return newTodos;
     });
   }
@@ -41,8 +38,9 @@ class TodosStore {
     lensAt(index).evolve((todo) => todo.copy(done: !todo.done));
   }
 
-  LensCase<Todo> lensAt(int index) =>
-      lens.getSight((todos) => todos.elementAt(index), (newTodo, todos) {
+  LensCase<Todo> lensAt(int index) => lens.getSight(
+          (todos) => index < todos.length ? todos.elementAt(index) : null,
+          (newTodo, todos) {
         final list = todos.toList();
         list[index] = newTodo;
         return list;
@@ -59,12 +57,10 @@ class TodoStore {
   }
 
   void delete() {
-    print('TodoStore.deleteTodo');
     changeDescription('');
   }
 
   void toggle() {
-    print('toggle');
     lens.evolve((todo) => todo.copy(done: !todo.done));
   }
 }
