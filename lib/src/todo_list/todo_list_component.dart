@@ -30,7 +30,7 @@ class TodoListComponent extends ComponentState {
     _store.lens.stream.listen((todos) {
       setState(() {
         final indices = new Iterable.generate(todos.length)
-            .where((index) => todos.elementAt(index).description != '');
+            .where((index) => !removeItem(todos.elementAt(index)));
         if (indices.length < todos.length) {
           _store.lens
               .update(indices.map((index) => todos.elementAt(index)).toList());
@@ -61,4 +61,6 @@ class TodoListComponent extends ComponentState {
     _store.addTodo(description);
     newTodo = '';
   }
+
+  bool removeItem(Todo todo) => todo.description == '';
 }
