@@ -21,17 +21,11 @@ class TodosStore {
   TodosStore();
 
   void addTodo(String description) {
-    lens.evolve((todos) {
-      final newTodos = todos.toList()..add(new Todo(description));
-      return newTodos;
-    });
+    lens.evolve((todos) => todos.toList()..add(new Todo(description)));
   }
 
   void removeTodo(int index) {
-    lens.evolve((todos) {
-      final list = todos.toList()..removeAt(index);
-      return list;
-    });
+    lens.evolve((todos) => todos.toList()..removeAt(index));
   }
 
   void toggle(int index) {
