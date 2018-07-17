@@ -34,11 +34,7 @@ class TodoListComponent extends ComponentState {
         if (indices.length < todos.length) {
           _store.lens
               .update(indices.map((index) => todos.elementAt(index)).toList());
-          return;
-        }
-
-        while (todos.length < _stores.length) {
-          _stores.removeLast();
+          _stores.removeRange(indices.length, _stores.length);
           return;
         }
 
