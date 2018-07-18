@@ -1,9 +1,19 @@
 <li>
+  <div>
     <material-checkbox materialTooltip="Mark item as done"
                        [checked]="todo.done" (click)="toggle()">
     </material-checkbox>
-    <span [class.done]="todo.done">{{tag}} {{todo.description}}</span>
+    <span [class.done]="todo.done"
+          (click)="foo()">
+    {{tag}} {{todo.description}}
+  </span>
     <material-fab mini (trigger)="remove()">
-        <material-icon icon="delete"></material-icon>
+      <material-icon icon="delete"></material-icon>
     </material-fab>
+  </div>
+  <ol>
+    <li *ngFor="let attachment of todo.attachments; let i = index">
+      {{attachment.name}}: {{attachment.views}} views
+    </li>
+  </ol>
 </li>

@@ -21,7 +21,8 @@
 <div *ngIf="stores.isNotEmpty">
   <ul>
       <todo *ngFor="let store of stores; let i=index"
-            [store]="store">
+            [store]="store"
+            (edit)="edit($event, i)">
       </todo>
   </ul>
 </div>

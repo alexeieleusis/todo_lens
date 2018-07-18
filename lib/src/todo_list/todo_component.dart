@@ -23,9 +23,10 @@ import 'package:todo_lens/src/domain/todo.dart';
 class TodoComponent extends ComponentState implements OnDestroy {
   static int _counter = 0;
   final int tag;
-  Todo _todo = const Todo('');
+  Todo _todo = Todo('');
   StreamSubscription<Todo> _subscription;
   TodoStore _store;
+  final _editController = new StreamController<Todo>();
 
   TodoComponent() : tag = _counter {
     _counter++;
@@ -51,9 +52,17 @@ class TodoComponent extends ComponentState implements OnDestroy {
 
   Todo get todo => _todo;
 
+  @Output()
+  Stream<Todo> get edit => _editController.stream;
+
+  void foo() {
+    _editController.add(_todo);
+  }
+
   @override
   void ngOnDestroy() {
     _subscription?.cancel();
+    _editController.close();
   }
 
   void remove() {

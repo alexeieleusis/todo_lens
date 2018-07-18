@@ -24,7 +24,10 @@ import 'package:todo_lens/src/todo_list/todo_component.dart';
 class TodoListComponent extends ComponentState {
   final TodosStore _store = new TodosStore();
   String newTodo = '';
-  final List<TodoStore> _stores = [];
+  Todo todo;
+  int index;
+  final List<TodoStore> _todosStores = [];
+  final List<AttachmentStore> _attachmentsStores = [];
 
   TodoListComponent() {
     _store.lens.stream.listen((todos) {
@@ -34,28 +37,45 @@ class TodoListComponent extends ComponentState {
         if (indices.length < todos.length) {
           _store.lens
               .update(indices.map((index) => todos.elementAt(index)).toList());
-          _stores.removeRange(indices.length, _stores.length);
+          _todosStores.removeRange(indices.length, _todosStores.length);
           return;
         }
 
-        _stores.addAll(todos
-            .skip(_stores.length)
+        _todosStores.addAll(todos
+            .skip(_todosStores.length)
             .toList()
             .asMap()
             .keys
-            .map((index) => _stores.length + index)
+            .map((index) => _todosStores.length + index)
             .toList()
-            .map(_store.lensAt)
+            .map(_store.todoLensAt)
             .map((lens) => new TodoStore(lens)));
+
+        todos.fold([], (lenses, todo) {
+
+        });
       });
     });
   }
 
-  Iterable<TodoStore> get stores => _stores;
+  Iterable<TodoStore> get stores => _todosStores;
 
   void add(String description) {
-    _store.addTodo(description);
+    if (todo == null) {
+      _store.addTodo(description);
+    } else {
+      // This is just an example! Don't do this with prod code.
+      _todosStores[index].changeDescription(newTodo);
+      todo = null;
+      index = null;
+    }
     newTodo = '';
+  }
+
+  void edit(Todo todo, int index) {
+    this.todo = todo;
+    this.index = index;
+    newTodo = todo.description;
   }
 
   bool removeItem(Todo todo) => todo.description == '';
